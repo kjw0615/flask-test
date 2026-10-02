@@ -33,7 +33,7 @@
         {% for task in tasks %}
           <form action="{{ url_for('toggle_task', task_id=task.id) }}" method="post"><input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}"><button class="task {% if task.done %}done{% endif %}" type="submit" aria-label="{{ task.title }} — {{ '완료 취소' if task.done else '완료 처리' }}"><span class="check">{{ '✓' if task.done else '' }}</span><span>{{ task.title }}</span></button></form>
         {% else %}<div class="empty"><span>✳</span><p>아직 비어 있는 하루.<br>첫 번째 계획을 더해 보세요.</p></div>{% endfor %}
-        </div><p class="task-note">최대 12개 · 계획은 이 브라우저의 세션에 저장됩니다.</p>
+        </div><p class="task-note">계획은 이 브라우저의 세션에 저장됩니다.</p>
       </div>
     </section>
   </main>
