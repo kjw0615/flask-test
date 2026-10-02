@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="작은 계획으로 시작하는 가벼운 하루. Flask로 만든 나만의 데일리 플래너입니다.">
+  <title>작은 하루 · Daily Studio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="nav wrap">
+    <a class="brand" href="/">작은 하루<span class="brand-dot">●</span></a>
+    <nav aria-label="메인 메뉴"><a href="#about">소개</a><a href="#planner">오늘의 계획 <span>↗</span></a></nav>
+  </header>
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-copy"><p class="eyebrow"><span></span> YOUR EVERYDAY, A LITTLE BETTER</p>
+        <h1>좋은 하루는<br><em>작은 계획</em>에서.</h1>
+        <p class="intro">복잡한 생각은 잠시 내려놓고,<br>오늘 하고 싶은 일 하나부터 시작해 보세요.</p>
+        <a class="button" href="#planner">나의 하루 시작하기 <span>↗</span></a>
+        <p class="small-note">작게 시작해도 괜찮아요. 당신의 속도로.</p>
+      </div>
+      <div class="art" aria-hidden="true"><div class="art-label">A FRESH START</div><div class="sun"></div><div class="hill hill-back"></div><div class="hill hill-front"></div><div class="art-bottom">ONE SMALL STEP AT A TIME <span>✳</span></div></div>
+    </section>
+    <section id="about" class="about"><p class="eyebrow">LESS, BUT BETTER</p><h2>하루를 채우는 세 가지 작은 습관</h2>
+      <div class="cards"><article><span class="number">01 /</span><h3>가볍게 적기</h3><p>머릿속에 맴도는 일을 적어 보세요.<br>시작이 조금 더 쉬워집니다.</p></article><article><span class="number">02 /</span><h3>하나씩 해내기</h3><p>모두 끝내야 할 필요는 없어요.<br>작은 성취 하나도 충분합니다.</p></article><article><span class="number">03 /</span><h3>나를 위한 시간</h3><p>산책, 커피, 잠깐의 휴식.<br>계획 사이에 여유도 남겨 두세요.</p></article></div>
+    </section>
+    <section id="planner" class="planner">
+      <div><p class="eyebrow">MY DAILY PLAN</p><h2>오늘, 무엇을 해볼까요?</h2><p class="muted">나만의 작은 목표를 적고, 완료하면 체크하세요.</p><span class="badge">{{ tasks | selectattr('done') | list | length }} / {{ tasks | length }} 완료</span></div>
+      <div class="task-panel">
+        <form class="add-form" action="{{ url_for('add_task') }}" method="post"><input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}"><label class="sr-only" for="title">새로운 할 일</label><input id="title" name="title" placeholder="예: 20분 산책하기" maxlength="100" required autocomplete="off"><button type="submit" aria-label="할 일 추가">+</button></form>
+        <div class="task-list">
+        {% for task in tasks %}
+          <form action="{{ url_for('toggle_task', task_id=task.id) }}" method="post"><input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}"><button class="task {% if task.done %}done{% endif %}" type="submit" aria-label="{{ task.title }} — {{ '완료 취소' if task.done else '완료 처리' }}"><span class="check">{{ '✓' if task.done else '' }}</span><span>{{ task.title }}</span></button></form>
+        {% else %}<div class="empty"><span>✳</span><p>아직 비어 있는 하루.<br>첫 번째 계획을 더해 보세요.</p></div>{% endfor %}
+        </div><p class="task-note">최대 12개 · 계획은 이 브라우저의 세션에 저장됩니다.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap"><span>작은 하루 © 2026</span><span>Made with Flask & a little care.</span></footer>
+</body>
+</html>
